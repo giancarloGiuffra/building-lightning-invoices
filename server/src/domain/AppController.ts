@@ -39,8 +39,14 @@ export class AppController {
     public async handleInvoice(invoice: Invoice) {
         if (invoice.settles(this.chainTip)) {
             throw new Error("Exercise! Replace me to pass tests!");
+
+            // capture and settle the current chain tip
             let settled;
+
+            // create a new unsettled Link using the LinkFactory
             let nextLink;
+
+            // add the new link to the chain
 
             // send to
             if (this.listener) {
