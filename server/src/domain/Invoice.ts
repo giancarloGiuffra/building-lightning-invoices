@@ -28,7 +28,7 @@ export class Invoice {
         remoteSignature: string,
         sats: number,
     ): Buffer {
-        throw new Error("Exercise! Replace me to pass tests!");
+        return sha256(Buffer.from(localSignature + remoteSignature + sats.toString()));
     }
 
     constructor(
