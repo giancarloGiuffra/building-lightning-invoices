@@ -13,7 +13,7 @@ export class Invoice {
      * @returns
      */
     public static createMemo(linkId: string, buyer: string) {
-        throw new Error("Exercise! Replace me to pass tests!");
+        return `buy_${linkId}_${buyer}`;
     }
 
     /**
