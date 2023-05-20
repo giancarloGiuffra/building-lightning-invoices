@@ -28,7 +28,9 @@ export class AppController {
      * @param startSats
      */
     public async start(seed: string, startSats: number) {
-        throw new Error("Exercise! Replace me to pass tests!");
+        const seedLink = await this.linkFactory.createFromSeed(seed, startSats);
+        this.chain.push(seedLink);
+        await this.invoiceDataMapper.sync(invoice => this.handleInvoice(invoice));
     }
 
     /**
@@ -38,15 +40,15 @@ export class AppController {
      */
     public async handleInvoice(invoice: Invoice) {
         if (invoice.settles(this.chainTip)) {
-            throw new Error("Exercise! Replace me to pass tests!");
-
             // capture and settle the current chain tip
-            let settled;
+            const settled = this.chainTip;
+            settled.settle(invoice);
 
             // create a new unsettled Link using the LinkFactory
-            let nextLink;
+            const nextLink = await this.linkFactory.createFromSettled(settled);
 
             // add the new link to the chain
+            this.chain.push(nextLink)
 
             // send to
             if (this.listener) {
@@ -75,14 +77,12 @@ export class AppController {
         // Use `Invoice.createPreimage` to create the preimage. Hint the
         // the `localSignature` is available on the `chaintip` and the
         // `remoteSignature` and `sats` are arguments to this method.
-        throw new Error("Exercise! Replace me to pass tests!");
-        let preimage: Buffer;
+        const preimage = Invoice.createPreimage(this.chainTip.localSignature, remoteSignature, sats);
 
         // Use `Invoice.createMemo` to create the memo. Hint the `linkId`
         // is available on the `chaintip` and the buyer is the `pubkey`
         // obtained in the signature verification.
-        throw new Error("Exercise! Replace me to pass tests!");
-        let memo: string;
+        const memo = Invoice.createMemo(this.chainTip.linkId, verification.pubkey);
 
         // try to create the invoice
         try {
