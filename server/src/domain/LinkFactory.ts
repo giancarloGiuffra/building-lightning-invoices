@@ -11,7 +11,8 @@ export class LinkFactory {
      * @returns
      */
     public async createFromSeed(seed: string, startSats: number): Promise<Link> {
-        throw new Error("Exercise! Replace me to pass tests!");
+        const seedSignature = await this.signer.sign(seed);
+        return new Link(seed, seedSignature, startSats);
     }
 
     /**
@@ -25,6 +26,11 @@ export class LinkFactory {
      * @returns
      */
     public async createFromSettled(settled: Link): Promise<Link> {
-        throw new Error("Exercise! Replace me to pass tests!");
+        if (!settled.isSettled){
+            throw new Error("Invoice has not settled");
+        }
+
+        const nextLinkIdSignature = await this.signer.sign(settled.nextLinkId);
+        return new Link(settled.nextLinkId, nextLinkIdSignature, Number(settled.invoice.valueSat) + 1);
     }
 }
